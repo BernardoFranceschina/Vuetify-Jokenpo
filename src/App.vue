@@ -1,33 +1,36 @@
 <template>
 	<v-app>
 		<v-toolbar>
-			<v-toolbar-title>Jokenpô</v-toolbar-title>
+			<v-toolbar-title v-if="pelloso">Jokenpô Do Pelloso</v-toolbar-title>
+			<v-toolbar-title v-else>Jokenpô</v-toolbar-title>
 			<v-spacer></v-spacer>
+			<v-toolbar-items>
+				<strong><v-checkbox class="mt-3" label="Você é o Mateus Pelloso?" v-model="pelloso"></v-checkbox></strong>
+			</v-toolbar-items>
 		</v-toolbar>
 	
-		<v-container fluid grid-list-lg fill-height style="min-height: 434px">
+		<v-container fluid grid-list-lg style="min-height: 434px">
 			<v-fade-transition mode="out-in">
 				<v-layout v-if="show" key="0" wrap>
 	
-					<v-flex xs4 @click="pedra()">
+					<v-flex xs4 @click="(pelloso) ? pellosoFunc() : pedra()">
 						<v-card>
-							<v-img src="../public/pedra.jpg" contain height="150"></v-img>
+							<v-img src="public/pedra.jpg" contain height="150"></v-img>
 							<v-card-title class="title">Pedra</v-card-title>
 						</v-card>
 					</v-flex>
-					<v-flex xs4 @click="papel()">
+					<v-flex xs4 @click="(pelloso) ? pellosoFunc() : papel()">
 						<v-card>
-							<v-img src="../public/papel.jpg" contain height="150"></v-img>
+							<v-img src="public/papel.jpg" contain height="150"></v-img>
 							<v-card-title class="title">Papel</v-card-title>
 						</v-card>
 					</v-flex>
-					<v-flex xs4 @click="tesoura()">
+					<v-flex xs4 @click="(pelloso) ? pellosoFunc() : tesoura()">
 						<v-card>
-							<v-img src="../public/tesoura.jpg" contain height="150"></v-img>
+							<v-img src="public/tesoura.jpg" contain height="150"></v-img>
 							<v-card-title class="title">Tesoura</v-card-title>
 						</v-card>
 					</v-flex>
-	
 				</v-layout>
 				<v-layout v-else key="1" justify-center>
 					<v-btn flat @click="show = true" class="subheading"><strong>Jogar</strong></v-btn>
@@ -36,7 +39,7 @@
 		</v-container>
 	
 		<div class="text-xs-center">
-			<v-dialog v-model="dialog" width="500">
+			<v-dialog v-model="dialog" width="270">
 				<v-card>
 					<v-card-title class="headline grey lighten-2" primary-title>
 						{{ title }}
@@ -58,6 +61,32 @@
 			</v-dialog>
 		</div>
 	
+		<div class="text-xs-center">
+			<v-dialog v-model="dialog2" width="270">
+				<v-card>
+					<v-card-title class="headline grey lighten-2" primary-title>
+						<v-avatar>
+							<img src="public/pelloso.jpg" alt="John">
+						</v-avatar>
+						⠀Ganhou!
+					</v-card-title>
+					<v-card-text>
+						Mateus Pelloso sempre ganha!
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-spacer></v-spacer>
+						<v-btn color="primary" flat @click="dialog2 = false, show = false">
+							Sair
+						</v-btn>
+						<v-btn color="primary" flat @click="dialog2 = false">
+							Jogar novamente
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</div>
+	
 		<v-footer class="pa-3">
 			Bernardo C. Franceschina
 			<v-spacer></v-spacer>
@@ -71,13 +100,18 @@
 	export default {
 		data() {
 			return {
+				pelloso: false,
 				dialog: false,
+				dialog2: false,
 				show: false,
 				title: '',
 				content: '',
 			}
 		},
 		methods: {
+			pellosoFunc: function() {
+				this.dialog2 = true;
+			},
 			papel: function() {
 				let bot1 = Math.floor((Math.random() * 3) + 1);
 	
